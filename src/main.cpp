@@ -1,23 +1,23 @@
 #include <iostream>
+#include <string>
+
 #include "UserManager.h"
+#include "CommandProcessor.h"
 
-int main() {
+int main()
+{
     UserManager manager;
+    CommandProcessor processor(manager);
+    std::string command;
+    while(true)
+    {
+        std::cout << "[Enter command]: ";
+        std::getline(std::cin, command);
 
-    manager.printAllUsers();
-    manager.printAllGroups();
-
-    manager.createUser(1, "alice");
-    manager.createUser(2, "bob");
-
-    manager.createGroup(10);
-    manager.createGroup(20);
-
-    manager.addUserToGroup(1, 10);
-    manager.addUserToGroup(2, 20);
-
-    manager.printAllUsers();
-    manager.printAllGroups();
-
+        if (!processor.processCommand(command)) 
+        {
+            break;
+        }
+    }
     return 0;
 }

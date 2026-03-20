@@ -48,22 +48,23 @@ bool UserManager::addUserToGroup(int userId, int groupId)
     return true;
 }
 
-void UserManager::printUser(int userId) const 
+void UserManager::getUser(int userId) const 
 {
     auto userIt = users.find(userId);
     if (userIt != users.end()) 
     {
         const User& user = userIt->second;
         std::cout << "User ID: " << user.getId() << std::endl << "Username: " << user.getUsername();
+        std::cout << std::endl << "Group ID: ";
         if (user.getGroupId()) 
         {
-            std::cout << std::endl << "Group ID: " << *user.getGroupId();
+            std::cout << *user.getGroupId();
         }
         else 
         {
-            std::cout << " no group assigned";
+            std::cout << " no group";
         }
-        std::cout << std::endl << std::endl;
+        std::cout << std::endl;
     } 
     else 
     {
@@ -72,7 +73,7 @@ void UserManager::printUser(int userId) const
     }
 }
 
-void UserManager::printGroup(int groupId) const 
+void UserManager::getGroup(int groupId) const 
 {
     auto groupIt = groups.find(groupId);
     if (groupIt == groups.end()) 
@@ -84,13 +85,13 @@ void UserManager::printGroup(int groupId) const
     std::cout << "Group ID: " << group.getId() << std::endl << "Users: ";
     if (group.getUserIds().empty()) 
     {
-        std::cout << "No users in this group.";
+        std::cout << "no users in this group.";
     }
     for (int userId : group.getUserIds()) 
     {
             std::cout << userId << " ";
     }
-    std::cout << std::endl << std::endl;
+    std::cout << std::endl;
 }
 
 bool UserManager::deleteUser(int userId) 
@@ -124,30 +125,32 @@ bool UserManager::deleteGroup(int groupId)
     return true;
 }
 
-void UserManager::printAllUsers() const 
+void UserManager::allUsers() const 
 {
     if (users.empty()) 
     {
-        std::cout << "No users." << std::endl << std::endl;
+        std::cout << "No users." << std::endl;
         return;
     }
-    std::cout << "Users:" << std::endl;
+    std::cout << std::endl;
     for (const auto& pair : users) 
     {
-        printUser(pair.first);
+        getUser(pair.first);
+        std::cout << std::endl;
     }
 }
 
-void UserManager::printAllGroups() const 
+void UserManager::allGroups() const 
 {
     if (groups.empty()) 
     {
-        std::cout << "No groups." << std::endl << std::endl;
+        std::cout << "No groups." << std::endl;
         return;
     }
-    std::cout << "Groups:" << std::endl;
+    std::cout << std::endl;
     for (const auto& pair : groups) 
     {
-        printGroup(pair.first);
+        getGroup(pair.first);
+        std::cout << std::endl;
     }
 }

@@ -9,6 +9,7 @@ set(SOURCES
     src/main.cpp
     src/User.cpp
     src/Group.cpp
-    src/UserManager.cpp)
+    src/UserManager.cpp
+    src/CommandProcessor.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCES})

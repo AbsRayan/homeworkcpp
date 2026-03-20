@@ -11,10 +11,10 @@ public:
 
     bool addUserToGroup(int userId, int groupId);
 
-    void printUser(int userId) const;
-    void printGroup(int groupId) const;
-    void printAllUsers() const;
-    void printAllGroups() const;
+    void getUser(int userId) const;
+    void getGroup(int groupId) const;
+    void allUsers() const;
+    void allGroups() const;
 
     bool deleteUser(int userId);
     bool deleteGroup(int groupId);
