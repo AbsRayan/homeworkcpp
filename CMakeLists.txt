@@ -6,10 +6,9 @@ project(${PROJECT_NAME})
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(SOURCES
-    main.cpp
-    User.cpp
-    Group.cpp
-    UserManager.cpp)
+    src/main.cpp
+    src/User.cpp
+    src/Group.cpp
+    src/UserManager.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-
