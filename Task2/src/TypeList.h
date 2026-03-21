@@ -9,22 +9,40 @@ struct TypeList
     static constexpr std::size_t size = sizeof...(Types);
 };
 
-template <typename T, typename List>
-struct PushFront;
-
-template <typename T, typename... Types>
-struct PushFront<T, TypeList<Types...>>
+namespace detail 
 {
-    using type = TypeList<T, Types...>;
+    template <typename T, typename List>
+    struct PushFrontImpl;
+
+    template <typename T, typename... Types>
+    struct PushFrontImpl<T, TypeList<Types...>>
+    {
+        using type = TypeList<T, Types...>;
+    };
+}
+
+template <typename T, typename List>
+struct PushFront
+{
+    using type = typename detail::PushFrontImpl<T, List>::type;
 };
 
-template <typename T, typename List>
-struct PushBack;
-
-template <typename T, typename... Types>
-struct PushBack<T, TypeList<Types...>>
+namespace detail
 {
-    using type = TypeList<Types..., T>;
+    template <typename T, typename List>
+    struct PushBackImpl;
+
+    template <typename T, typename... Types>
+    struct PushBackImpl<T, TypeList<Types...>>
+    {
+        using type = TypeList<Types..., T>;
+    };
+}
+
+template <typename T, typename List>
+struct PushBack
+{
+    using type = typename detail::PushBackImpl<T, List>::type;
 };
 
 namespace detail
@@ -80,6 +98,7 @@ struct TypeAt
 {
     using type = typename detail::TypeAtImpl<Index, List>::type;
 };
+
 namespace detail
 {
     template <typename T, typename List>
