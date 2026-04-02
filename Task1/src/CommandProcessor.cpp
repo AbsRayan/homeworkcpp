@@ -63,6 +63,22 @@ bool CommandProcessor::processCommand(const std::string& command)
             std::cout << "Failed to add user to group. User or group ID may not exist." << std::endl;
         }
     }
+    else if (action == "removeUserFromGroup") 
+    {
+        int userId;
+        if (!(iss >> userId)) 
+        {
+            std::cout << "Invalid command format. Usage: removeUserFromGroup <userId>" << std::endl;
+        }
+        else if (manager.removeUserFromGroup(userId)) 
+        {
+            std::cout << "User removed from group successfully." << std::endl;
+        } 
+        else 
+        {
+            std::cout << "Failed to remove user from group. User ID may not exist or user may not be in a group." << std::endl;
+        }
+    }
     else if (action == "getUser") 
     {
         int userId;

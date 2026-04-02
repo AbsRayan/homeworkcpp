@@ -12,12 +12,17 @@ const std::string& User::getUsername() const
     return username;
 }
 
-std::optional<int> User::getGroupId() const 
+std::shared_ptr<Group> User::getGroup() const 
 {
-    return groupId;
+    return group.lock();
 }
 
-void User::setGroupId(std::optional<int> newGroupId) 
+void User::setGroup(const std::shared_ptr<Group>& newGroup) 
 {
-    groupId = newGroupId;
+    group = newGroup;
+}
+
+void User::clearGroup() 
+{
+    group.reset();
 }

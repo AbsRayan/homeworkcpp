@@ -1,17 +1,21 @@
 #pragma once
-#include <string>
+
+#include <memory>
 #include <vector>
+
+class User;
 
 class Group {
 public:
     Group(int id);
 
     int getId() const;
-    const std::vector<int>& getUserIds() const;
-
-    void addUser(int userId);
+    
+    void addUser(const std::shared_ptr<User>& user);
     void removeUser(int userId);
+
+    const std::vector<std::shared_ptr<User>> getUsers() const;
 private:
     int id;
-    std::vector<int> userIds;
+    std::vector<std::weak_ptr<User>> users;
 };

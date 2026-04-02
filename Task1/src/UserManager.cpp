@@ -7,7 +7,7 @@ bool UserManager::createUser(int id, const std::string& username)
     {
         return false;
     }
-    users.emplace(id, User(id, username));
+    users.emplace(id, std::make_shared<User>(id, username));
     return true;
 }
 
@@ -17,7 +17,7 @@ bool UserManager::createGroup(int id)
     {
         return false;
     }
-    groups.emplace(id, Group(id));
+    groups.emplace(id, std::make_shared<Group>(id));
     return true;
 }
 
@@ -31,19 +31,42 @@ bool UserManager::addUserToGroup(int userId, int groupId)
         return false;
     }
 
-    if (userIt->second.getGroupId().has_value() && userIt->second.getGroupId().value() == groupId) 
+    std::shared_ptr<User> user = userIt->second;
+    std::shared_ptr<Group> newGroup = groupIt->second;
+
+    std::shared_ptr<Group> currentGroup = user->getGroup();
+    if (currentGroup && currentGroup->getId() == groupId) 
     {
         return true;
     }
 
-    if (userIt->second.getGroupId().has_value()) 
+    if (currentGroup) 
     {
-        int oldGroupId = userIt->second.getGroupId().value();
-        groups.at(oldGroupId).removeUser(userId);
+        currentGroup->removeUser(userId);
     }
 
-    userIt->second.setGroupId(groupId);
-    groupIt->second.addUser(userId);
+    newGroup->addUser(user);
+    user->setGroup(newGroup);
+
+    return true;
+}
+
+bool UserManager::removeUserFromGroup(int userId)
+{
+    auto userIt = users.find(userId);
+    if (userIt == users.end()) 
+    {
+        return false;
+    }
+
+    std::shared_ptr<User> user = userIt->second;
+    std::shared_ptr<Group> group = user->getGroup();
+    if (!group) 
+    {
+        return false;
+    }
+    group->removeUser(userId);
+    user->setGroup(nullptr);
 
     return true;
 }
@@ -51,25 +74,24 @@ bool UserManager::addUserToGroup(int userId, int groupId)
 void UserManager::getUser(int userId) const 
 {
     auto userIt = users.find(userId);
-    if (userIt != users.end()) 
-    {
-        const User& user = userIt->second;
-        std::cout << "User ID: " << user.getId() << std::endl << "Username: " << user.getUsername();
-        std::cout << std::endl << "Group ID: ";
-        if (user.getGroupId()) 
-        {
-            std::cout << *user.getGroupId();
-        }
-        else 
-        {
-            std::cout << " no group";
-        }
-        std::cout << std::endl;
-    } 
-    else 
+    if (userIt == users.end()) 
     {
         std::cout << "User not found." << std::endl << std::endl;
         return;
+    } 
+
+    std::shared_ptr<User> user = userIt->second;
+    std::cout << "User ID: " << user->getId() << std::endl;
+    std::cout << "Username: " << user->getUsername() << std::endl;
+
+    std::shared_ptr<Group> group = user->getGroup();
+    if (group)
+    {
+        std::cout << "Group ID: " << group->getId() << std::endl;
+    } 
+    else 
+    {
+        std::cout << "No group." << std::endl;
     }
 }
 
@@ -81,15 +103,21 @@ void UserManager::getGroup(int groupId) const
         std::cout << "Group " << groupId << " not found." << std::endl << std::endl;
         return;
     }
-    const Group& group = groupIt->second;
-    std::cout << "Group ID: " << group.getId() << std::endl << "Users: ";
-    if (group.getUserIds().empty()) 
+    std::shared_ptr<Group> group = groupIt->second;
+    std::vector<std::shared_ptr<User>> groupUsers = group->getUsers();
+
+    std::cout << "Group ID: " << group->getId() << std::endl << "Users: ";
+    
+    if (groupUsers.empty()) 
     {
         std::cout << "no users in this group.";
     }
-    for (int userId : group.getUserIds()) 
+    else 
     {
-            std::cout << userId << " ";
+        for (const auto& user : groupUsers) 
+        {
+            std::cout << user->getUsername() << " ID: " << user->getId() << "; ";
+        }
     }
     std::cout << std::endl;
 }
@@ -101,11 +129,15 @@ bool UserManager::deleteUser(int userId)
     {
         return false;
     }
-    if (userIt->second.getGroupId().has_value()) 
+
+    std::shared_ptr<User> user = userIt->second;
+    std::shared_ptr<Group> group = user->getGroup();
+
+    if(group) 
     {
-        int groupId = userIt->second.getGroupId().value();
-        groups.at(groupId).removeUser(userId);
+        group->removeUser(userId);
     }
+
     users.erase(userIt);
     return true;
 }
@@ -117,10 +149,15 @@ bool UserManager::deleteGroup(int groupId)
     {
         return false;
     }
-    for (int userId : groupIt->second.getUserIds()) 
+
+    std::shared_ptr<Group> group = groupIt->second;
+    std::vector<std::shared_ptr<User>> groupUsers = group->getUsers();
+    
+    for (const auto& user : groupUsers) 
     {
-        users.at(userId).setGroupId(std::nullopt);
+        user->clearGroup();
     }
+
     groups.erase(groupIt);
     return true;
 }
