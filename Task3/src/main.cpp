@@ -17,9 +17,12 @@ int main()
 
     std::cout << map.HasValue<int>() << '\n';
 
-    try {
+    try 
+    {
         std::cout << map.GetValue<int>() << '\n';
-    } catch (const std::runtime_error& e) {
+    }
+    catch (const std::runtime_error& e) 
+    {
         std::cout << e.what() << '\n';
     }
 
