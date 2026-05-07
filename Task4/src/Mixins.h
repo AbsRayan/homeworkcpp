@@ -52,6 +52,9 @@ public:
         ++count;
     }
 
+    counter& operator=(const counter&) = default;
+    counter& operator=(counter&&) = default;
+
     ~counter()
     {
         --count;
