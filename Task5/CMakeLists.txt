@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(PROJECT_NAME Task4)
+set(PROJECT_NAME Task5)
 project(${PROJECT_NAME})
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(SOURCES
-    src/main.cpp)
+    src/main.cpp
+    src/log.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCES})

@@ -2,6 +2,7 @@
 
 #include <ctime>
 #include <string>
+#include <deque>
 
 enum class LogLevel
 {
@@ -20,8 +21,16 @@ struct LogEvent
 class Log
 {
 public:
-    static Log& Instance();
+    static Log& getInstance();
+
+    void message(LogLevel level, const std::string& msg);
+    void print() const;
 
 private:
     Log() = default;
+
+    Log(const Log&) = delete;
+    Log& operator=(const Log&) = delete;
+
+    std::deque<LogEvent> events;
 };
