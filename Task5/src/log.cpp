@@ -16,6 +16,7 @@ std::string LogLevelToString(LogLevel level)
             return "Unknown";
     }
 }
+
 Log& Log::getInstance()
 {
     static Log instance;
